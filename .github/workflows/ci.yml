@@ -1,0 +1,80 @@
+name: CI/CT Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: secure-db-password
+          POSTGRES_DB: whisper_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Backend tests
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.23'
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Copy test environment file
+        working-directory: ./Backend
+        run: cp .env.test .env
+          
+      - name: Build, start backend server, and run tests
+        working-directory: ./Backend
+        run: |
+          go build -o main cmd/server/main.go
+          ./main &
+          echo "Waiting for server to start..."
+          for i in {1..30}; do
+            if curl -s http://localhost:6262/health > /dev/null; then
+              echo "Server is up!"
+
+              python3 -m pip install -r testing/requirements.txt
+              pytest testing/
+              break
+            fi
+            if [ $i -eq 30 ]; then
+              echo "Server failed to start"
+              exit 1
+            fi
+            sleep 1
+          done
+
+      - name: Cleanup
+        if: always()
+        run: |
+          pkill main || true  # Kill the backend server

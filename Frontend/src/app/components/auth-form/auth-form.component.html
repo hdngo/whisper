@@ -1,0 +1,30 @@
+<div class="container">
+    <div class="inner-content">
+        <div class="signup-form-container">
+            <div class="signup-form">
+                <div class="title">
+                    <div>Whisper</div>
+                </div>
+                <div class="form-header">
+                    <h1>Welcome!</h1>
+                    <h2>Please login or sign up to start.</h2>
+                </div>
+
+                <form class="form-fields">
+                    <input type="text" class="form-input" placeholder="Username" name="username" id="username" [(ngModel)]="username"/>
+                    <input type="password" class="form-input" placeholder="Password" name="password" id="password" [(ngModel)]="password"/>
+                    <!-- Error if exist -->
+                    <div class="error" *ngIf="error">Error: {{error}}</div>
+                </form> 
+
+                <div class="form-footer">
+                    <button (click)="onSubmit(true)">Login</button>
+                    <button (click)="onSubmit(false)">Sign Up</button>
+                </div>
+            </div>
+        </div>
+        <div class="image-container">
+            <div class="image"></div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,58 @@
+<div class="container">
+    <div class="sidebar">
+        <div class="account-area">
+            <div class="heading">
+                <div class="username">
+                    {{this.authService.currentuser == null ? "Anonymous" : this.authService.currentuser}}
+                </div>
+                <div class="description">
+                    My account
+                </div>
+            </div>
+
+            <div *ngIf="this.authService.isLoggedIn">
+                <button (click)="logout()">Logout</button>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="online-list">
+            <div class="heading">Currently in chat</div>
+            <div class="user-list">
+                <ul>
+                    <li *ngFor="let user of onlineUsers"><div class="truncate">{{ user }}</div></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-area">
+        <div #messagesContainer class="message-container" (scroll)="onScroll($event)">
+            <div *ngFor="let message of messages" class="messages" [ngClass]="{'own-message': message.username === this.authService.currentuser}">
+                <div class="message-content">
+                    <div class="message-username">
+                        {{ message.username }}
+                    </div>
+                    <div class="message-text">
+                        {{ message.content }}
+                    </div>
+                </div>
+                <div class="message-timestamp">
+                    {{ message.created_at * 1000 | date: 'h:mm a, M/d/yy' }}
+                </div>
+            </div>
+        </div>
+        <div class="message-input">
+            <form (ngSubmit)="sendMessage()">
+                <input
+                    type="text"
+                    [(ngModel)]="newMessage"
+                    name="newMessage"
+                    placeholder="Enter your message..."
+                    autocomplete="off"
+                >
+            </form>
+        </div>
+    </div>
+</div>
