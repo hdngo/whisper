@@ -56,7 +56,7 @@ export class AuthService {
         return this.http.post<AuthResponse>(`${this.API_URL}/auth/register`, credentials)
             .pipe(
                 map(response => {
-                    localStorage.setItem('currentUser', JSON.stringify(response.username));
+                    localStorage.setItem('currentUser', response.username);
                     localStorage.setItem('token', response.token);
                     this.currentUserSubject.next(response.username);
                     this.tokenSubject.next(response.token);

@@ -36,7 +36,12 @@ git clone https://github.com/hdngo/whisper.git
 cd whisper
 ```
 
-2. Start the application using Docker Compose
+2. Create a .env file based on .env.example
+```bash
+cp Backend\.env.example Backend\.env
+```
+
+3. Start the application using Docker Compose
 ```bash
 docker-compose up -d
 ```
@@ -44,7 +49,6 @@ docker-compose up -d
 The application will be available at `http://localhost:80` (port can be changed via `docker-compose.yml`)
 
 ## Local Development
-
 ### Backend
 ```bash
 cd Backend
@@ -54,6 +58,8 @@ go run cmd/server/main.go
 ```
 
 ### Frontend
+Since frontend assumes the same port for API requests, it is recommended you have nginx setup to forward requests to their appropriate place.
+If not, just set the API URL in `auth.service.ts` and WS URL in `websocket.service.ts` accordingly.
 ```bash
 cd Frontend
 npm install
