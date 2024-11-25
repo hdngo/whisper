@@ -1,6 +1,8 @@
 # Whisper
-
 A real-time web-based chat application built with Angular and Go.
+
+![image](https://github.com/user-attachments/assets/6319c238-599c-4e75-b26a-575e0972bb31)
+![image](https://github.com/user-attachments/assets/ef2bbe73-15d3-403e-b7ec-dc46a8dd617e)
 
 ## Features
 
